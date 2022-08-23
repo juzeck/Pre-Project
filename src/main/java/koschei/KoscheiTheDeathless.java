@@ -8,11 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class KoscheiTheDeathless {
 
-    @Qualifier("ocean1")
     private Ocean1 ocean;
 
     public String getRulesByDeth() {
-        return "На свете есть океан (World0) , " + ocean.toString();
+        return "На свете есть океан , " + ocean.toString();
     }
 
     @Autowired
