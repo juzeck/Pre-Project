@@ -5,15 +5,18 @@
     <title>Show User</title>
 </head>
 <body>
-
+<form th:method="logout" th:action="@{/logout}">
+    <input type="submit" value="Log out"/>
+</form>
+<br/>
 <a th:text="${user.getId()}">id</a>
-<a th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.getFirstName()}">first name</a>
-<a th:text="${user.lastName}">last name</a>
+<a th:href="@{/admin/users/{id}(id=${user.getId()})}" th:text="${user.getFirstname()}">first name</a>
+<a th:text="${user.lastname}">last name</a>
 <a th:text="${user.getAge()}">age</a>
 <br>
-<a th:href="@{/users/{id}/edit(id=${user.getId()})}">Edit</a>
+<a th:href="@{/admin/users/{id}/edit(id=${user.getId()})}">Edit</a>
 
-<form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}">
+<form th:method="DELETE" th:action="@{/admin/users/{id}(id=${user.getId()})}">
     <input type="submit" value="Delete"/>
 </form>
 </body>
