@@ -19,6 +19,10 @@ public class RoleServiceimpl {
         return roleRepository.findAll();
     }
 
+    public Role saveRole(Role role){
+        return roleRepository.save(role);
+    }
+
     public Role getRoleById(Long id){
         return roleRepository.getRoleById(id);
     }

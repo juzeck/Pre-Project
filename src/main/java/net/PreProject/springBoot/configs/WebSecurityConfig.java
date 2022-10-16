@@ -29,15 +29,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers( "/user").permitAll()
+                .antMatchers( "/user").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/admin/**", "/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
-                .permitAll()
-                .and()
-                .logout()
                 .permitAll();
+
 
         http.logout()
                 // разрешаем делать логаут всем
