@@ -5,14 +5,15 @@ import net.PreProject.springBoot.model.User;
 import net.PreProject.springBoot.servise.RoleServiceimpl;
 import net.PreProject.springBoot.servise.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.transaction.Transactional;
-import java.util.HashSet;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/")
@@ -27,60 +28,57 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/admin/users")
-    public String index(Model model) {
+    @GetMapping({"/admin", "list"})
+    public String showAllUsers(Model model) {
         model.addAttribute("users", userService.findAll());
-        return "index";
+        model.addAttribute("allRoles", roleService.findAll());
+
+        model.addAttribute("showUserProfile",
+                model.containsAttribute("user") && !((User) model.getAttribute("user")).isNew());
+        model.addAttribute("showNewUserForm",
+                model.containsAttribute("user") && ((User) model.getAttribute("user")).isNew());
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new User());
+        }
+
+        return "fragments/admin-page";
+    }
+    @GetMapping("/admin/{id}/profile")
+    public String showUserProfileModal(@PathVariable("id") Long userId, Model model, RedirectAttributes attributes) {
+        try {
+            model.addAttribute("allRoles", roleService.findAll());
+            model.addAttribute("user", userService.findById(userId));
+            return "fragments/edit";
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
+    @PostMapping("/admin")
+    public String insertUser(@Valid @ModelAttribute("user") User user) {
+        userService.saveUser(user);
 
-    @GetMapping("/admin/users/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "/new";
+        return "redirect:/admin";
     }
+
 
     @ModelAttribute("roles")
     public List<Role> getRoles() {
         return roleService.findAll();
     }
 
-    @PostMapping("/admin/users")
-    @Transactional
-    public String create(@RequestParam("roles") long[] roleId, @ModelAttribute("user") User user) {
-        Set<Role> roleSet = new HashSet<>();
-        for(long id : roleId){
-            Role role = roleService.getRoleById(id);
-            roleSet.add(role);
-        }
-        System.out.println("_____________");
-        System.out.println(roleSet);
-        user.setRoles(roleSet);
+    @PatchMapping()
+    public String updateUser(@Valid @ModelAttribute("user") User user) {
         userService.saveUser(user);
 
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/admin/users/{id}")
-    public String show(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        return "show";
+    @DeleteMapping("")
+    public String deleteUser(@ModelAttribute("user") User user) {
+        userService.deleteById(user.getId());
+        return "redirect:/admin";
     }
 
-    @GetMapping("/admin/users/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.findById(id));
-        return "edit";
-    }
 
-    @PatchMapping("/admin/users/{id}")
-    public String update(@ModelAttribute("user") User user, @PathVariable("id") int id) {
-        userService.saveUser(user);
-        return "redirect:/admin/users";
-    }
-
-    @DeleteMapping("/admin/users/{id}")
-    public String delete(@PathVariable("id") long id) {
-        userService.deleteById(id);
-        return "redirect:/admin/users";
-    }
 }

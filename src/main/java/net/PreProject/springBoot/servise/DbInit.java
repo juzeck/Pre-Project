@@ -28,8 +28,8 @@ public class DbInit {
 
     @PostConstruct
     private void postConstruct() {
-        User admin = new User("admin", "admin", 21, "admin");
-        User user = new User("user", "user", 22, "user");
+        User admin = new User("admin", "admin", 21, "admin@email", "admin");
+        User user = new User("user", "user", 22, "user@email", "user");
         userService.saveUser(admin);
         userService.saveUser(user);
         Role roleAdmin = new Role(1L, "ROLE_ADMIN");
