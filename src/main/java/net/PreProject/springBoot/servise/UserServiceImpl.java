@@ -26,6 +26,12 @@ public class UserServiceImpl {
         return userRepository.findAll();
     }
 
+    public void updateUser(User user) {
+        if (!user.getPassword().equals(userRepository.findById(user.getId()).get().getPassword())) {
+            user.setPassword(user.getPassword());
+        }
+        userRepository.save(user);
+    }
     public User saveUser(User user){
         return userRepository.save(user);
     }

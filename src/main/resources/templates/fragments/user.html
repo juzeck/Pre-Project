@@ -39,7 +39,6 @@
                         <th scope="col">ID</th>
                         <th scope="col">First name</th>
                         <th scope="col">Last name</th>
-                        <th scope="col">Age</th>
                         <th scope="col">E-mail</th>
                         <th scope="col">Roles</th>
                     </tr>
@@ -49,7 +48,6 @@
                         <td th:text="*{id}"/>
                         <td th:text="*{firstname}"/>
                         <td th:text="*{lastname}"/>
-                        <td th:text="*{age}"/>
                         <td th:text="*{email}"/>
                         <td><th:block th:each="role : *{roles}">
                             &nbsp;<span th:text="${role.getName()}"/>
@@ -62,6 +60,5 @@
     </div>
 </div>
 
-<!--<div th:replace="layouts/main :: footer"/>-->
 </body>
 </html>
